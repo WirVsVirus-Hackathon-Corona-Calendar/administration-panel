@@ -1,32 +1,50 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <!-- HEADER -->
+    <v-app-bar
+      app
+      clipped-left
+      dark
+    >
+      <v-btn v-for="({ title, to }, index) of routes" :key="index"
+        :to= "to"
+        large
+        text
+        tile
+        depressed
+        height="100%"
+        class="my-0 py-0"
+        >{{ title }}</v-btn>
+      <v-spacer />
+      <v-toolbar-title>Administration Inf und Firus</v-toolbar-title>
+      <v-btn icon>
+        <v-icon>settings</v-icon>
+      </v-btn>
+    </v-app-bar>
+    <!-- CONTENT -->
+    <v-content>
+      <v-container fluid>
+        <!-- INJECTION OF THE VIEW -->
+        <Router-view />
+      </v-container>
+    </v-content>
+  </v-app>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<script lang="ts">
+import Vue from 'vue';
+import Component from 'vue-class-component';
+
+interface Route {
+  title: string;
+  route: string;
 }
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+@Component({ name: 'App' })
+export default class App extends Vue {
+  public readonly routes: Route[] = [
+    { title: 'Liste', route: '/' },
+    { title: 'Anlegen', route: '/create' },
+  ];
 }
-</style>
+</script>
