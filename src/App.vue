@@ -6,8 +6,8 @@
       clipped-left
       dark
     >
-      <v-btn v-for="({ title, to }, index) of routes" :key="index"
-        :to= "to"
+      <v-btn v-for="({ title, route }, index) of routes" :key="index"
+        :to= "route"
         large
         text
         tile
