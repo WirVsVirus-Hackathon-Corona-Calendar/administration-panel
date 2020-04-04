@@ -76,10 +76,10 @@ export default class ListChallenges extends Vue {
       text: 'Nr', align: 'start', sortable: true, value: 'order', width: '100',
     },
     {
-      text: 'Titel', align: 'start', sortable: true, value: 'title',
+      text: 'Titel', align: 'start', sortable: true, value: 'titel',
     },
     {
-      text: 'Body', align: 'start', sortable: true, value: 'body',
+      text: 'Beschreibung', align: 'start', sortable: true, value: 'beschreibung',
     },
     {
       text: 'Actions', value: 'actions', sortable: false, width: '100',
