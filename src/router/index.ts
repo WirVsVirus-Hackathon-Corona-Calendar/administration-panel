@@ -1,8 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import { ListChallenges } from '@/views';
-// import CreateChallenge from '../views/CreateChallenge.vue';
-// import EditChallenge from '../views/EditChallenge.vue';
+import { ListChallenges, CreateChallenge } from '@/views';
 
 Vue.use(VueRouter);
 
@@ -13,12 +11,12 @@ const routes = [
     component: ListChallenges,
     default: true,
   },
-  /* {
+  {
     path: '/create',
     name: 'CreateChallenge',
     component: CreateChallenge,
   },
-  {
+  /* {
     path: '/edit',
     name: 'EditChallenge',
     component: EditChallenge,
