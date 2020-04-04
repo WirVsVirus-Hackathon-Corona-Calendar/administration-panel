@@ -2,7 +2,7 @@ import { axios } from '@/utils';
 import { Challenge, ChallengeDto } from './challenge';
 
 class ChallengesService {
-  private _challenges: Challenge[] = [];
+  private challenges: Challenge[] = [];
 
   public async loadChallenges(): Promise<Challenge[]> {
     const resp = await axios
@@ -18,17 +18,13 @@ class ChallengesService {
 
     const challenges = data.map((c) => Challenge.fromDto(c));
 
-    this._challenges = challenges;
+    this.challenges = challenges;
 
     return challenges;
   }
 
-  public getChallenge(id: number): Challenge | undefined {
-    return this._challenges.find((c) => c.id === id);
-  }
-
-  public get challenges(): Challenge[] {
-    return this._challenges;
+  public getChallenge(id: string): Challenge | undefined {
+    return this.challenges.find((c) => c.id === id);
   }
 }
 
