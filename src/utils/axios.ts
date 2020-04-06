@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios from 'axios';
 
 const REDIRECT_URL = 'https://corona-cal.auth.eu-west-1.amazoncognito.com/login?response_type=token&client_id=osupm9rc8kv7jpnhjdtsqu7vj&redirect_uri=https://d30c8b2026z1gr.cloudfront.net';
 
