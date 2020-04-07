@@ -18,12 +18,12 @@ if (localStorage.getItem('AUTH_TOKEN')) {
 
   localStorage.setItem('AUTH_TOKEN', token);
 } else {
-  window.location.href = REDIRECT_URL;
+  // window.location.href = REDIRECT_URL;
 }
 // #endregion
 
 // TODO: Use environments instead
-const axiosInstance = axios.create({
+const http = axios.create({
   baseURL: 'https://e3bzj7x3ck.execute-api.eu-west-1.amazonaws.com/v1',
   headers: {
     'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ const axiosInstance = axios.create({
 });
 
 // Redirect to login when 401 occurs
-axiosInstance.interceptors.response.use(
+http.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response.status === 401) {
@@ -46,6 +46,4 @@ axiosInstance.interceptors.response.use(
   },
 );
 
-export {
-  axiosInstance as axios,
-};
+export default http;

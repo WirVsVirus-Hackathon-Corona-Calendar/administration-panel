@@ -1,11 +1,11 @@
-import { axios } from '@/utils';
+import { http } from '@/common/http';
 import { Challenge, ChallengeDto } from './challenge';
 
 class ChallengesService {
   private challenges: Challenge[] = [];
 
   public async loadChallenges(): Promise<Challenge[]> {
-    const resp = await axios
+    const resp = await http
       .get('/challenges')
       .catch(console.error);
 
