@@ -11,54 +11,96 @@
             :rules="titleRules"
             label="Titel"
             outlined
-            clearable
             hint="Aussagekräftig, maximal zwei Wörter"
             required
           ></v-text-field>
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="4">
+        <v-col cols="4" class="pb-0">
           <v-textarea
             v-model="description"
-            :rules="isRequired"
+            :rules="[isRequiredRule]"
             label="Beschreibung"
             textarea
+            clearable
             outlined
             required
           ></v-textarea>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="4" class="pb-0">
           <v-textarea
             v-model="storyBefore"
-            :rules="isRequired"
+            :rules="[isRequiredRule]"
             label="Story davor"
             textarea
+            clearable
             outlined
             required
           ></v-textarea>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="4" class="pb-0">
           <v-textarea
             v-model="storyAfter"
-            :rules="isRequired"
+            :rules="[isRequiredRule]"
             label="Story danach"
             textarea
+            clearable
             outlined
             required
           ></v-textarea>
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="4">
+        <v-col cols="4" class="pb-0">
           <v-file-input
-            ref="img"
+            v-model="icon"
+            :rules="[isRequiredRule]"
             accept="image/*"
-            multiple label="Bild hochladen"
+            label="Hintergrundbild hochladen"
             append-icon="attach_file"
             prepend-icon=""
-            @change="fileUpload($event, 'icon')"
           ></v-file-input>
+        </v-col>
+        <v-col cols="4" class="pb-0">
+          <v-file-input
+            v-model="storyBeforeIcon"
+            :rules="[isRequiredRule]"
+            accept="image/*"
+            label="Bild Story davor hochladen"
+            append-icon="attach_file"
+            prepend-icon=""
+          ></v-file-input>
+        </v-col>
+        <v-col cols="4" class="pb-0">
+          <v-file-input
+          v-model="storyAfterIcon"
+            :rules="[isRequiredRule]"
+            accept="image/*"
+            label="Bild Story danach hochladen"
+            append-icon="attach_file"
+            prepend-icon=""
+          ></v-file-input>
+        </v-col>
+      </v-row>
+      <v-row v-if="!!icon || !!storyBeforeIcon || !!storyAfterIcon">
+        <v-col cols="4">
+          <v-img
+            :src="iconPreview"
+            alt="Icon Preview"
+          />
+        </v-col>
+        <v-col cols="4">
+          <v-img
+            :src="storyBeforeIconPreview"
+            alt="Icon Preview"
+          />
+        </v-col>
+        <v-col cols="4">
+          <v-img
+            :src="storyAfterIconPreview"
+            alt="Icon Preview"
+          />
         </v-col>
       </v-row>
       <v-row>
@@ -76,7 +118,7 @@
             class="mr-4"
             @click="reset"
           >
-            Reset Form
+            Abbrechen
           </v-btn>
         </v-col>
       </v-row>
@@ -87,57 +129,84 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import { Watch } from 'vue-property-decorator';
 import { convertImgToB64 } from '@/utils';
+import EditableList from './EditableList.vue';
 
 type Validator = (v: string) => boolean | string;
 
-function isRequired(v: string) {
+function isRequiredRule(v: string) {
   return !!v || 'Pflichtfeld';
 }
 
-@Component({ name: 'ChallengeEditor' })
+@Component({
+  name: 'ChallengeEditor',
+  components: { EditableList },
+})
 export default class ChallengeEditor extends Vue {
-  public formIsValid = false;
+  public $refs!: {
+    form: HTMLFormElement;
+  }
 
-  /** isRequired() exposed as rule set. */
-  public isRequired: Validator[] = [isRequired]
+  /** isRequiredRule() exposed as rule set. */
+  public isRequiredRule: Validator = isRequiredRule;
+
+  // #region FORM PROPS
+  public formIsValid = false;
 
   public title = '';
 
   public titleRules: Validator[] = [
-    isRequired,
-    (v) => (v.split(' ').length <= 2) || 'Titel darf maximal 2 Wörter haben',
+    isRequiredRule,
+    (v) => (!!v && v.split(' ').length <= 2) || 'Titel darf maximal 2 Wörter haben',
   ];
 
+  // description and icon
   public description = '';
 
-  private icon = '';
+  public icon: File | null = null;
 
+  private iconPreview = '';
+
+  @Watch('icon', { immediate: false })
+  private async onIconChange(file: File | null): Promise<void> {
+    if (file) this.iconPreview = await convertImgToB64(file);
+  }
+
+  // story before and icon
   public storyBefore = '';
 
+  public storyBeforeIcon: File | null = null;
+
+  private storyBeforeIconPreview = '';
+
+  @Watch('storyBeforeIcon', { immediate: false })
+  private async onStoryBeforeIconChange(file: File | null): Promise<void> {
+    if (file) this.storyBeforeIconPreview = await convertImgToB64(file);
+  }
+
+  // story after and icon
   public storyAfter = '';
 
+  public storyAfterIcon: File | null = null;
 
-  public validate() {
-    (this.$refs.form as Vue & { validate: () => boolean }).validate();
+  private storyAfterIconPreview = '';
+
+  @Watch('storyAfterIcon', { immediate: false })
+  private async onStoryAfterIconChange(file: File | null): Promise<void> {
+    if (file) this.storyAfterIconPreview = await convertImgToB64(file);
   }
+  // #endregion
+
+  // #region UTILITIES
+  public validate() {
+    this.$refs.form.validate();
+    }
 
   public reset() {
-    (this.$refs.form as Vue & { reset: () => void }).reset();
+    this.$refs.form.reset();
   }
-
-  public async fileUpload(event: File[], target: string) {
-    const [file] = event;
-
-    switch (target) {
-      case 'icon': this.icon = await convertImgToB64(file);
-
-        break;
-      default:
-    }
-  }
+  // #endregion
 }
 </script>
 
-<style scoped>
-</style>
