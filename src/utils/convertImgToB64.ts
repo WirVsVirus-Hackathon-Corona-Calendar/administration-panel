@@ -6,12 +6,7 @@ export async function convertImgToB64(file: Blob): Promise<string> {
     const reader = new FileReader();
 
     reader.onloadend = () => {
-      // TODO: Find a better solution
-      if (typeof reader.result !== 'string') return;
-
-      const imgAsB64 = reader.result?.replace(/^data:.+;base64,/, '');
-
-      resolve(imgAsB64);
+      resolve(reader.result?.toString());
     };
 
     reader.onerror = () => {
