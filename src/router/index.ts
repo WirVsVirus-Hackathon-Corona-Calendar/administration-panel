@@ -1,18 +1,19 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { ListChallenges, CreateChallenge } from '@/views';
+import { Routes } from './routes';
 
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
+    path: Routes.ListChallenges,
     name: 'ListChallenges',
     component: ListChallenges,
     default: true,
   },
   {
-    path: '/create',
+    path: Routes.CreateChallenge,
     name: 'CreateChallenge',
     component: CreateChallenge,
   },
@@ -24,7 +25,7 @@ const routes = [
   }, */
   {
     path: '*',
-    redirect: '/',
+    redirect: Routes.ListChallenges,
   },
 ];
 
